@@ -13,8 +13,9 @@ namespace DigitalOceanV2\Entity;
 
 /**
  * @author Antoine Corcy <contact@sbin.dk>
+ * @author Graham Campbell <graham@alt-three.com>
  */
-class Action extends AbstractEntity
+final class Action extends AbstractEntity
 {
     /**
      * @var int
@@ -62,9 +63,9 @@ class Action extends AbstractEntity
     public $regionSlug;
 
     /**
-     * @param \stdClass|array $parameters
+     * @param array $parameters
      */
-    public function build($parameters)
+    public function build(array $parameters)
     {
         parent::build($parameters);
 
@@ -80,7 +81,7 @@ class Action extends AbstractEntity
      */
     public function setCompletedAt($completedAt)
     {
-        $this->completedAt = $this->convertDateTime($completedAt);
+        $this->completedAt = static::convertDateTime($completedAt);
     }
 
     /**
@@ -88,6 +89,6 @@ class Action extends AbstractEntity
      */
     public function setStartedAt($startedAt)
     {
-        $this->startedAt = $this->convertDateTime($startedAt);
+        $this->startedAt = static::convertDateTime($startedAt);
     }
 }

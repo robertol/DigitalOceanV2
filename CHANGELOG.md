@@ -1,6 +1,40 @@
 CHANGELOG
 =========
 
+2.1.2 (12/09/2016)
+------------------
+
+- Added support for Volumes (Block Storage)
+- Added the size_gigabytes attribute to images
+- Added the posibility to page through droplets - PR #141
+- Improved the update method for domain records - PR #142
+
+2.1.0 (2015-12-22)
+------------------
+
+- Unified exception handling in adapters
+- Support using buzz without curl
+- Added missing floatingIp method
+
+2.0.0 (2015-12-21)
+------------------
+
+- Added guzzle 6 support (watch out for the adapter rename)
+- Major cleanup of adapters
+- Fixed content type handling
+- Support updaing fields on domain records
+- Fixed droplet entity networking issues
+- Allow using custom endpoints
+- Made the entity classes final
+- Removed dynamic entity properties
+- Updated the account entity with the latest properties
+- Support creating multiple droplets at once
+- Support converting images to snapshots
+- Support the ability to enable droplet backups
+- Added full floating ip support
+- Improved exceptions
+- Minor code cleanup
+
 1.0.1 (2015-06-25)
 ------------------
 

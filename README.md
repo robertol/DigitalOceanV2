@@ -11,24 +11,6 @@ Let's consume the [DigitalOcean API V2](https://developers.digitalocean.com/v2/)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/toin0u/DigitalOceanV2/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/toin0u/DigitalOceanV2/?branch=master)
 [![License](https://poser.pugx.org/toin0u/digitalocean-v2/license.svg)](https://packagist.org/packages/toin0u/digitalocean-v2)
 
-Status
-------
-
-API | Documentation | Specification tests
---- | ------------- | -------------------
-[Account](https://developers.digitalocean.com/v2/#account) | [√](https://github.com/toin0u/DigitalOceanV2#account) | √
-[Actions](https://developers.digitalocean.com/v2/#actions) | [√](https://github.com/toin0u/DigitalOceanV2#action) | √
-[Domain records](https://developers.digitalocean.com/v2/#domain-records) | [√](https://github.com/toin0u/DigitalOceanV2#domain-record) | √
-[Domains](https://developers.digitalocean.com/v2/#domains) | [√](https://github.com/toin0u/DigitalOceanV2#domain) | √
-[Droplet actions](https://developers.digitalocean.com/v2/#droplet-actions) | [√](https://github.com/toin0u/DigitalOceanV2#droplet) | √
-[Droplets](https://developers.digitalocean.com/v2/#droplets) | [√](https://github.com/toin0u/DigitalOceanV2#droplet) | √
-[Image actions](https://developers.digitalocean.com/v2/#image-actions) | [√](https://github.com/toin0u/DigitalOceanV2#image) | √
-[Images](https://developers.digitalocean.com/v2/#images) | [√](https://github.com/toin0u/DigitalOceanV2#image) | √
-[Keys](https://developers.digitalocean.com/v2/#keys) | [√](https://github.com/toin0u/DigitalOceanV2#key) | √
-[Regions](https://developers.digitalocean.com/v2/#regions) | [√](https://github.com/toin0u/DigitalOceanV2#region) | √
-[Rate Limit](https://developers.digitalocean.com/#rate-limit) | [√](https://github.com/toin0u/DigitalOceanV2#rate-limit) | √
-[Sizes](https://developers.digitalocean.com/v2/#sizes) | [√](https://github.com/toin0u/DigitalOceanV2#size) | √
-
 Installation
 ------------
 
@@ -39,7 +21,7 @@ Run these commands to install composer, the library and its dependencies:
 
 ```bash
 $ curl -sS https://getcomposer.org/installer | php
-$ php composer.phar require toin0u/digitalocean-v2:~1.0
+$ php composer.phar require toin0u/digitalocean-v2:~2.0
 ```
 
 You then need to install **one** of the following:
@@ -47,6 +29,7 @@ You then need to install **one** of the following:
 $ php composer.phar require kriswallsmith/buzz:~0.10
 $ php composer.phar require guzzle/guzzle:~3.7
 $ php composer.phar require guzzlehttp/guzzle:~5.0
+$ php composer.phar require guzzlehttp/guzzle:~6.0
 ```
 
 Or edit `composer.json` and add:
@@ -54,7 +37,7 @@ Or edit `composer.json` and add:
 ```json
 {
     "require": {
-        "toin0u/digitalocean-v2": "~1.0"
+        "toin0u/digitalocean-v2": "~2.0"
     }
 }
 ```
@@ -66,7 +49,8 @@ And then add **one** of the following:
     "require": {
         "kriswallsmith/buzz": "~0.10",
         "guzzle/guzzle": "~3.7",
-        "guzzlehttp/guzzle" : "~5.0"
+        "guzzlehttp/guzzle": "~5.0",
+        "guzzlehttp/guzzle": "~6.0"
     }
 }
 ```
@@ -78,7 +62,7 @@ And then add **one** of the following:
 ```json
 {
     "require": {
-        "graham-campbell/digitalocean": "~1.0"
+        "graham-campbell/digitalocean": "~3.0"
     }
 }
 ```
@@ -181,14 +165,6 @@ $digitalocean = new DigitalOceanV2($adapter);
 // ...
 ```
 
-Entities
---------
-
-Every entity has the `getUnknownProperties` method which will return an `array` of properties set with unknown
-properties by the entity. This will prevent the library to
-[fail](https://github.com/toin0u/DigitalOceanV2/pull/79#issuecomment-74075046). This should be removed when the API
-will be released as stable.
-
 Account
 -------
 
@@ -255,8 +231,8 @@ $domainRecord123 = $domainRecord->getById('foo.dk', 123);
 // return the created DomainRecord entity of the domain 'bar.dk'
 $created = $domainRecord->create('bar.dk', 'AAAA', 'bar-name', '2001:db8::ff00:42:8329');
 
-// return the updated DomainRecord entity 123 of the domain 'baz.dk'
-$updated = $domainRecord->update('baz.dk', 123, 'new-name');
+// return the DomainRecord entity 123 of the domain 'baz.dk' updated with new-name, new-data, priority 1, port 2 and weight 3 (name, data, priority, port, weight are nullable)
+$updated = $domainRecord->update('baz.dk', 123, 'new-name', 'new-data', 1, 2, 3);
 
 // delete domain record 123 of the domain 'qmx.dk'
 $domainRecord->delete('qmx.dk', 123);
@@ -309,7 +285,7 @@ $actions = $droplet->getActions(123);
 // return the Action entity 456 of the droplet 123
 $action123 = $droplet->getActionById(123, 456);
 
-// delete droplet 123 and return the Action entity
+// reboot droplet 123 and return the Action entity
 $rebooted = $droplet->reboot(123);
 
 // power cycle droplet 123 and return the Action entity
@@ -460,15 +436,50 @@ $rateLimit = $digitalocean->rateLimit();
 $currentLimit = $rateLimit->getRateLimit();
 ```
 
-Specification tests
--------------------
+Volume
+---------
 
-Install [PHPSpec](http://www.phpspec.net/) [globally](https://getcomposer.org/doc/00-intro.md#globally)
-with composer and run it in the project.
+```php
+// ..
+// return the volume api
+$volume = $digitalocean->volume();
 
-```bash
-$ composer global require phpspec/phpspec:@stable
-$ phpspec run -fpretty
+// returns the all volumes
+$volumes = $volume->getAll();
+
+// returns the all volumes by region
+$volumes = $volume->getAll('nyc1');
+
+// returns volumes by name and region
+$volumes = $volume->getByNameAndRegion('example', 'nyc1');
+
+// returns a volume by id
+$myvolume = $volume->getById('506f78a4-e098-11e5-ad9f-000f53306ae1');
+
+// creates a volume
+$myvolume = $volume->create('example', 'Block store for examples', 10, 'nyc1');
+
+// deletes a volume by id
+$volume->delete('506f78a4-e098-11e5-ad9f-000f53306ae1');
+
+// deletes a volume by name and region
+$volume->delete('example', 'nyc1');
+
+// attach a volume to a Droplet 
+$volume->attach('506f78a4-e098-11e5-ad9f-000f53306ae1', 123, 'nyc1');
+
+// detach a volume from a Droplet 
+$volume->detach('506f78a4-e098-11e5-ad9f-000f53306ae1', 123, 'nyc1');
+
+// resize a volume 
+$volume->resize('506f78a4-e098-11e5-ad9f-000f53306ae1', 20, 'nyc1');
+
+// get a volume action by its id 
+$volume->getActionById(123, '506f78a4-e098-11e5-ad9f-000f53306ae1');
+
+// get all actions related to a volume
+$volume->getActions('506f78a4-e098-11e5-ad9f-000f53306ae1');
+
 ```
 
 Contributing
@@ -485,8 +496,11 @@ Credits
 -------
 
 * [Antoine Corcy](https://twitter.com/toin0u)
+* [Graham Campbell](https://twitter.com/GrahamCampbell)
 * [Yassir Hannoun](https://twitter.com/yassirh)
 * [Liverbool](https://github.com/liverbool)
+* [Marcos Sigueros](https://github.com/alrik11es)
+* [Chris Fidao](https://github.com/fideloper)
 * [All contributors](https://github.com/toin0u/DigitalOceanV2/contributors)
 
 Support
@@ -521,7 +535,7 @@ maintainers.
 
 This Code of Conduct is adapted from the [Contributor
 Covenant](http:contributor-covenant.org), version 1.0.0, available at
-[http://contributor-covenant.org/version/1/0/0/](http://contributor-covenant.org/version/1/0/0/)
+[http://contributor-covenant.org/version/1/0/0/](http://contributor-covenant.org/version/1/0/0/).
 
 License
 -------
