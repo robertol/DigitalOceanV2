@@ -129,6 +129,10 @@ class DropletSpec extends \PhpSpec\ObjectBehavior
                             "ipv6"
                         ],
                         "status": "active",
+                        "tags" : [
+                            "tag-1" ,
+                            "tag-2"
+                        ],
                         "networks": {
                             "v4": [
                                 {
@@ -167,6 +171,8 @@ class DropletSpec extends \PhpSpec\ObjectBehavior
 
         $droplet = $this->getById(14);
         $droplet->shouldReturnAnInstanceOf('DigitalOceanV2\Entity\Droplet');
+        $droplet->tags->shouldBeArray();
+        $droplet->tags->shouldHaveCount(2);
         $droplet->networks->shouldBeArray();
         $droplet->networks->shouldHaveCount(2);
         $droplet->networks[0]->shouldReturnAnInstanceOf('DigitalOceanV2\Entity\Network');
@@ -202,6 +208,7 @@ class DropletSpec extends \PhpSpec\ObjectBehavior
                         "created_at": "",
                         "features": ["virtio", "private_networking", "backups", "ipv6"],
                         "status": "active",
+                        "tags" : [],
                         "networks": {
                             "v4": [
                                 {
@@ -229,6 +236,8 @@ class DropletSpec extends \PhpSpec\ObjectBehavior
 
         $droplet = $this->getById(1234);
         $droplet->shouldReturnAnInstanceOf('DigitalOceanV2\Entity\Droplet');
+        $droplet->tags->shouldBeArray();
+        $droplet->tags->shouldHaveCount(0);
         $droplet->networks->shouldBeArray();
         $droplet->networks->shouldHaveCount(2);
         $droplet->networks[0]->shouldReturnAnInstanceOf('DigitalOceanV2\Entity\Network');
@@ -259,7 +268,7 @@ class DropletSpec extends \PhpSpec\ObjectBehavior
         $adapter
             ->post(
                 'https://api.digitalocean.com/v2/droplets',
-                ['name' => 'foo', 'region' => 'nyc1', 'size' => '512mb', 'image' => 123456, 'backups' => 'false', 'ipv6' => 'false', 'private_networking' => 'false']
+                ['name' => 'foo', 'region' => 'nyc1', 'size' => '512mb', 'image' => 123456, 'backups' => 'false', 'ipv6' => 'false', 'private_networking' => 'false', 'monitoring' => 'true']
             )
             ->willReturn('{"droplet": {}}');
 
@@ -271,7 +280,7 @@ class DropletSpec extends \PhpSpec\ObjectBehavior
         $adapter
             ->post(
                 'https://api.digitalocean.com/v2/droplets',
-                ['name' => 'bar', 'region' => 'nyc2', 'size' => '512mb', 'image' => 'ubuntu', 'backups' => 'true', 'ipv6' => 'true', 'private_networking' => 'true', 'ssh_keys' => ['123', '456', '789']]
+                ['name' => 'bar', 'region' => 'nyc2', 'size' => '512mb', 'image' => 'ubuntu', 'backups' => 'true', 'ipv6' => 'true', 'private_networking' => 'true', 'ssh_keys' => ['123', '456', '789'], 'monitoring' => 'true']
             )
             ->willReturn('{"droplet":{}}');
 
@@ -297,7 +306,7 @@ class DropletSpec extends \PhpSpec\ObjectBehavior
         $adapter
             ->post(
                 'https://api.digitalocean.com/v2/droplets',
-                ['name' => 'foo', 'region' => 'nyc1', 'size' => '512mb', 'image' => 123456, 'backups' => 'false', 'ipv6' => 'false', 'private_networking' => 'false']
+                ['name' => 'foo', 'region' => 'nyc1', 'size' => '512mb', 'image' => 123456, 'backups' => 'false', 'ipv6' => 'false', 'private_networking' => 'false', 'monitoring' => 'true']
             )
             ->willThrow(new HttpException('Request not processed.'));
 
